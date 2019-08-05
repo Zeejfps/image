@@ -20,7 +20,7 @@ class JpegDecoder extends Decoder {
   }
 
   DecodeInfo startDecode(List<int> data) {
-    input = InputBuffer(data, bigEndian: true);
+    input = InputBuffer(data);
     info = JpegData().readInfo(data);
     return info;
   }

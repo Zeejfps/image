@@ -194,7 +194,7 @@ class PngDecoder extends Decoder {
           _input.skip(4); // CRC
           break;
         case 'iCCP':
-          _info.iCCPName = _input.readString();
+          _info.iCCPName = _input.tryReadString();
           _info.iCCPCompression = _input.readByte(); // 0: deflate
           chunkSize -= _info.iCCPName.length + 2;
           final profile = _input.readBytes(chunkSize);

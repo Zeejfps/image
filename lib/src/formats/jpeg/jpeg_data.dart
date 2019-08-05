@@ -574,10 +574,8 @@ class JpegData {
     String alignment = block.readString(2);
     if (alignment == 'II') {
       // Exif is in Intel order
-      block.bigEndian = false;
     } else if (alignment == 'MM') {
       // Exif section in Motorola order
-      block.bigEndian = true;
     } else {
       return;
     }
@@ -588,7 +586,6 @@ class JpegData {
     if (offset < 8 || offset > 16) {
       if (offset > block.length - 16) {
         // invalid offset for first Exif IFD value ;
-        block.bigEndian = saveEndian;
         return;
       }
     }
@@ -598,8 +595,6 @@ class JpegData {
     }
 
     _readExifDir(block);
-
-    block.bigEndian = saveEndian;
   }
 
   void _readAppData(int marker, InputBuffer block) {

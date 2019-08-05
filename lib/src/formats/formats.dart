@@ -4,18 +4,14 @@ import '../animation.dart';
 import '../image.dart';
 
 import 'decoder.dart';
-import 'exr_decoder.dart';
 import 'gif_decoder.dart';
 import 'gif_encoder.dart';
 import 'jpeg_decoder.dart';
 import 'jpeg_encoder.dart';
 import 'png_decoder.dart';
 import 'png_encoder.dart';
-import 'psd_decoder.dart';
 import 'tga_decoder.dart';
 import 'tga_encoder.dart';
-import 'tiff_decoder.dart';
-import 'webp_decoder.dart';
 
 /// Find a [Decoder] that is able to decode the given image [data].
 /// Use this is you don't know the type of image it is.
@@ -38,26 +34,6 @@ Decoder findDecoderForData(List<int> data) {
   GifDecoder gif = GifDecoder();
   if (gif.isValidFile(bytes)) {
     return gif;
-  }
-
-  WebPDecoder webp = WebPDecoder();
-  if (webp.isValidFile(bytes)) {
-    return webp;
-  }
-
-  TiffDecoder tiff = TiffDecoder();
-  if (tiff.isValidFile(bytes)) {
-    return tiff;
-  }
-
-  PsdDecoder psd = PsdDecoder();
-  if (psd.isValidFile(bytes)) {
-    return psd;
-  }
-
-  ExrDecoder exr = ExrDecoder();
-  if (exr.isValidFile(bytes)) {
-    return exr;
   }
 
   return null;
@@ -98,20 +74,8 @@ Decoder getDecoderForNamedImage(String name) {
   if (n.endsWith('.tga')) {
     return new TgaDecoder();
   }
-  if (n.endsWith('.webp')) {
-    return new WebPDecoder();
-  }
   if (n.endsWith('.gif')) {
     return new GifDecoder();
-  }
-  if (n.endsWith('.tif') || n.endsWith('.tiff')) {
-    return new TiffDecoder();
-  }
-  if (n.endsWith('.psd')) {
-    return new PsdDecoder();
-  }
-  if (n.endsWith('.exr')) {
-    return new ExrDecoder();
   }
   return null;
 }
@@ -217,17 +181,6 @@ List<int> encodeTga(Image image) {
 /// Renamed to [encodeTga], left for backward compatibility.
 List<int> writeTga(Image image) => encodeTga(image);
 
-/// Decode a WebP formatted image (first frame for animations).
-Image decodeWebP(List<int> bytes) {
-  return new WebPDecoder().decodeImage(bytes);
-}
-
-/// Decode an animated WebP file. If the webp isn't animated, the animation
-/// will contain a single frame with the webp's image.
-Animation decodeWebPAnimation(List<int> bytes) {
-  return new WebPDecoder().decodeAnimation(bytes);
-}
-
 /// Decode a GIF formatted image (first frame for animations).
 Image decodeGif(List<int> bytes) {
   return new GifDecoder().decodeImage(bytes);
@@ -247,27 +200,4 @@ List<int> encodeGif(Image image) {
 /// Encode an animation to the GIF format.
 List<int> encodeGifAnimation(Animation anim) {
   return new GifEncoder().encodeAnimation(anim);
-}
-
-/// Decode a TIFF formatted image.
-Image decodeTiff(List<int> bytes) {
-  return new TiffDecoder().decodeImage(bytes);
-}
-
-/// Decode an multi-image (animated) TIFF file. If the tiff doesn't have
-/// multiple images, the animation will contain a single frame with the tiff's
-/// image.
-Animation decodeTiffAnimation(List<int> bytes) {
-  return new TiffDecoder().decodeAnimation(bytes);
-}
-
-/// Decode a Photoshop PSD formatted image.
-Image decodePsd(List<int> bytes) {
-  return new PsdDecoder().decodeImage(bytes);
-}
-
-/// Decode an OpenEXR formatted image, tone-mapped using the
-/// given [exposure] to a low-dynamic-range [Image].
-Image decodeExr(List<int> bytes, {double exposure = 1.0}) {
-  return new ExrDecoder(exposure: exposure).decodeImage(bytes);
 }
